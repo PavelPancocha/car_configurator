@@ -4,6 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
+from kivy.uix.image import Image
 
 
 class Manager(ScreenManager):
@@ -11,19 +12,31 @@ class Manager(ScreenManager):
     def __init__(self, *args, **kwargs):
         super(Manager, self).__init__(*args, **kwargs)
         # define screens
-        # color screen
+        # colour screen
+        colour_screen = Screen(name = "1 - Colour")
+        layout = BoxLayout(spacing = 1, orientation="vertical")
+        layout.add_widget(Label(text="Choose Colour"))
+        layout.add_widget(Image(source = "logo.png"))
+        colour_screen.add_widget(layout)
+        self.add_widget(colour_screen)
+
+        # engine screen
+        engine_screen = Screen(name = "2 - Engine")
+        self.add_widget(engine_screen)
+
+        # equipment screen
+        equipment_screen = Screen(name = "3 - Equipment")
+        self.add_widget(equipment_screen)
+
+        # loan screen
+        loan_screen = Screen(name = "4 - Loan")
+        self.add_widget(loan_screen)
 
 
 
 
 
 
-        for i in range(4):
-            txt = 'Screen {}'.format(i)
-            lbl = Label(text=txt)
-            screen = Screen(name=txt)
-            screen.add_widget(lbl)
-            self.add_widget(screen)
 
 
 class Nav(GridLayout):
@@ -32,12 +45,16 @@ class Nav(GridLayout):
         super(Nav, self).__init__(*args, **kwargs)
         self.sm = sm
         self.rows = 1
-        self.cols = 4
+        self.cols = 5
         self.row_force_default = True
         self.row_default_height = 50
         # self.size_hint = (.2, 1)
-        for i in range(4):
-            self.add_widget(Button(text="Screen {}".format(i), on_release=self.change))
+        self.add_widget(Button(text="1 - Colour", on_release=self.change))
+        self.add_widget(Button(text="2 - Engine", on_release=self.change))
+        self.add_widget(Button(text="3 - Equipment", on_release=self.change))
+        self.add_widget(Button(text="4 - Loan", on_release=self.change))
+        self.add_widget(Button(text="Exit", on_release=App.stop, size_hint = (.4,1),
+                               background_color = [.4,.4,.4,1]))
 
     def change(self, btn):
         self.sm.current = btn.text
@@ -58,6 +75,7 @@ class TestApp(App):
 
     def build(App):
         App.title = "Car configurator"
+        App.icon = "logo.png"
         return Root()
 
 
