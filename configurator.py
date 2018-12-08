@@ -1,55 +1,57 @@
-from time import time
 from kivy.app import App
-from kivy.lang import Builder
-from kivy.properties import NumericProperty, StringProperty, BooleanProperty,\
-    ListProperty
-from kivy.animation import Animation
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 
-# kv_str = Builder.load_string('''
-# <ColourScreen>:
-#     BoxLayout:
-#         Button:
-#             text: "My button"
-#
-# BoxLayout:
-#     orientation: "vertical"
-#     ActionBar:
-#         pos_hint: {'top':1}
-#         ActionView:
-#             use_separator: True
-#             ActionPrevious:
-#                 title: 'Car Configurator'
-#                 with_previous: False
-#                 app_icon: "logo.png"
-#             ActionButton:
-#                 text: '1 - Colour'
-#             ActionButton:
-#                 text: '2 - Engine'
-#             ActionButton:
-#                 text: '3 - Equimpment'
-#             ActionButton:
-#                 text: '4 - Loan'
-#             ActionButton:
-#                 text: 'Exit'
-#     ScreenManager:
-#         id: sm
-#
-# ''')
 
-class ColourScreen(Screen):
-    pass
+class Manager(ScreenManager):
 
-sm = ScreenManager()
-sm.add_widget(ColourScreen(name="colour"))
+    def __init__(self, *args, **kwargs):
+        super(Manager, self).__init__(*args, **kwargs)
 
-class CarConfigurator(App):
-    def build(self):
-        self.title = "Car Configurator"
-        self.icon = "logo.png"
+        for i in range(4):
+            txt = 'Screen {}'.format(i)
+            lbl = Label(text=txt)
+            screen = Screen(name=txt)
+            screen.add_widget(lbl)
+            self.add_widget(screen)
 
+
+class Nav(GridLayout):
+
+    def __init__(self, sm=None, *args, **kwargs):
+        super(Nav, self).__init__(*args, **kwargs)
+        self.sm = sm
+        self.rows = 1
+        self.cols = 4
+        self.row_force_default = True
+        self.row_default_height = 50
+        # self.size_hint = (.2, 1)
+        for i in range(4):
+            self.add_widget(Button(text="Screen {}".format(i), on_release=self.change))
+
+    def change(self, btn):
+        self.sm.current = btn.text
+
+
+class Root(BoxLayout):
+
+    def __init__(self, *args, **kwargs):
+        super(Root, self).__init__(*args, **kwargs)
+        self.orientation = "vertical"
+        sm = Manager()
+
+        self.add_widget(Nav(sm=sm))
+        self.add_widget(sm)
+
+
+class TestApp(App):
+
+    def build(App):
+        return Root()
 
 
 if __name__ == '__main__':
-    CarConfigurator().run()
+    TestApp().run()
