@@ -1,0 +1,32 @@
+#:kivy 1.8.0
+#:import KivyLexer kivy.extras.highlight.KivyLexer
+#:import Factory kivy.factory.Factory
+
+<ColourScreen>:
+    BoxLayout:
+        Button:
+            text: "My button"
+
+BoxLayout:
+    orientation: "vertical"
+    ActionBar:
+        pos_hint: {'top':1}
+        ActionView:
+            id: av
+            use_separator: True
+            ActionPrevious:
+                title: 'Car Configurator'
+                with_previous: False
+                app_icon: "logo.png"
+            ActionButton:
+                text: '1 - Colour'
+            ActionButton:
+                text: '2 - Engine'
+            ActionButton:
+                text: '3 - Equimpment'
+            ActionButton:
+                text: '4 - Loan'
+            ActionButton:
+                text: 'Exit'
+    ScreenManager:
+        id: sm
