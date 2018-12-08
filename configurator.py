@@ -10,6 +10,13 @@ class Manager(ScreenManager):
 
     def __init__(self, *args, **kwargs):
         super(Manager, self).__init__(*args, **kwargs)
+        # define screens
+        # color screen
+
+
+
+
+
 
         for i in range(4):
             txt = 'Screen {}'.format(i)
@@ -50,6 +57,7 @@ class Root(BoxLayout):
 class TestApp(App):
 
     def build(App):
+        App.title = "Car configurator"
         return Root()
 
 
