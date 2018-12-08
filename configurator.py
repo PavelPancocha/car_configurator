@@ -6,6 +6,11 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 
+picture = "logo.png"
+
+
+
+
 
 class Manager(ScreenManager):
 
@@ -13,10 +18,21 @@ class Manager(ScreenManager):
         super(Manager, self).__init__(*args, **kwargs)
         # define screens
         # colour screen
+
+
+
+
         colour_screen = Screen(name = "1 - Colour")
         layout = BoxLayout(spacing = 1, orientation="vertical")
-        layout.add_widget(Label(text="Choose Colour"))
-        layout.add_widget(Image(source = "logo.png"))
+        layout.add_widget(Label(valign="top", text="Choose Colour", size_hint=(1,0.5)))
+        car_image = Image(source = picture, allow_stretch=True)
+        layout.add_widget(car_image)
+        switches = GridLayout(cols=4, size_hint=(1,0.2))
+        switches.add_widget(Button(text="red"))
+        switches.add_widget(Button(text="Green"))
+        switches.add_widget(Button(text="Barva"))
+        switches.add_widget(Button(text="Barva"))
+        layout.add_widget(switches)
         colour_screen.add_widget(layout)
         self.add_widget(colour_screen)
 
@@ -39,6 +55,13 @@ class Manager(ScreenManager):
 
 
 
+
+
+
+
+
+
+
 class Nav(GridLayout):
 
     def __init__(self, sm=None, *args, **kwargs):
@@ -47,8 +70,8 @@ class Nav(GridLayout):
         self.rows = 1
         self.cols = 5
         self.row_force_default = True
-        self.row_default_height = 50
-        # self.size_hint = (.2, 1)
+        self.row_default_height = 40
+        self.size_hint = (1, .1)
         self.add_widget(Button(text="1 - Colour", on_release=self.change))
         self.add_widget(Button(text="2 - Engine", on_release=self.change))
         self.add_widget(Button(text="3 - Equipment", on_release=self.change))
