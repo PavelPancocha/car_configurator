@@ -6,7 +6,8 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 
-picture = "logo.png"
+from kivy.cache import Cache
+
 
 
 
@@ -14,26 +15,30 @@ picture = "logo.png"
 
 class Manager(ScreenManager):
 
+
     def __init__(self, *args, **kwargs):
+        image = Image(source="red.png", allow_stretch=True)
         super(Manager, self).__init__(*args, **kwargs)
         # define screens
         # colour screen
 
-
-
-
         colour_screen = Screen(name = "1 - Colour")
-        layout = BoxLayout(spacing = 1, orientation="vertical")
-        layout.add_widget(Label(valign="top", text="Choose Colour", size_hint=(1,0.5)))
-        car_image = Image(source = picture, allow_stretch=True)
-        layout.add_widget(car_image)
+        colour_layout = BoxLayout(spacing = 1, orientation="vertical")
+        colour_layout.add_widget(Label(valign="top", text="Choose Colour", size_hint=(1,0.5)))
+        car_image_layout = GridLayout(cols = 1, rows = 1)
+        car_image_layout.add_widget(image)
+        colour_layout.add_widget(car_image_layout)
+        def changeimage(self):
+            image.source = "green.png"
+            image.reload()
         switches = GridLayout(cols=4, size_hint=(1,0.2))
-        switches.add_widget(Button(text="red"))
+        switches.add_widget(Button(text="Red", on_release=changeimage))
         switches.add_widget(Button(text="Green"))
-        switches.add_widget(Button(text="Barva"))
-        switches.add_widget(Button(text="Barva"))
-        layout.add_widget(switches)
-        colour_screen.add_widget(layout)
+        switches.add_widget(Button(text="Blue"))
+        switches.add_widget(Button(text="White"))
+
+        colour_layout.add_widget(switches)
+        colour_screen.add_widget(colour_layout)
         self.add_widget(colour_screen)
 
         # engine screen
@@ -47,18 +52,8 @@ class Manager(ScreenManager):
         # loan screen
         loan_screen = Screen(name = "4 - Loan")
         self.add_widget(loan_screen)
-
-
-
-
-
-
-
-
-
-
-
-
+    def callback(self, value):
+        self.image(source="green.png")
 
 
 
@@ -96,11 +91,15 @@ class Root(BoxLayout):
 
 class TestApp(App):
 
+
     def build(App):
         App.title = "Car configurator"
         App.icon = "logo.png"
         return Root()
 
 
+
+
 if __name__ == '__main__':
     TestApp().run()
+
