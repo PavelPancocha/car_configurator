@@ -7,7 +7,7 @@ from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.label import Label
 from kivy.uix.image import Image
 from kivy.uix.checkbox import CheckBox
-
+from kivy.uix.textinput import TextInput
 
 
 class Manager(ScreenManager):
@@ -26,6 +26,7 @@ class Manager(ScreenManager):
             colour_price_label.text = price_text
             engine_price_label.text = price_text
             equipment_price_label.text = price_text
+            loan_price_label.text = price_text
 
         super(Manager, self).__init__(*args, **kwargs)
         # define screens
@@ -86,7 +87,6 @@ class Manager(ScreenManager):
             price += added_price_engine
             change_price()
 
-
         engine_screen = Screen(name="2 - Engine")
         engine_layout = BoxLayout(spacing=1, orientation="vertical")
         engine_layout.add_widget(Label(valign="top", text="Choose Engine", bold=True, size_hint=(1, 0.2)))
@@ -112,39 +112,33 @@ class Manager(ScreenManager):
         self.add_widget(engine_screen)
 
         # equipment screen
-        def change_equipment_navigation(_,value):
+        def change_equipment_navigation(_, value):
             nonlocal added_price_equipment, price
-            print("FUnction active", value)
             added_price_equipment = 0
             if value is True:
                 added_price_equipment += 20000
             else:
                 added_price_equipment += -20000
-            print(added_price_equipment)
             price += added_price_equipment
             change_price()
 
-        def change_equipment_cc(_,value):
+        def change_equipment_cc(_, value):
             nonlocal added_price_equipment, price
-            print("FUnction active", value)
             added_price_equipment = 0
             if value is True:
                 added_price_equipment += 5000
             else:
                 added_price_equipment += -5000
-            print(added_price_equipment)
             price += added_price_equipment
             change_price()
 
-        def change_equipment_led(_,value):
+        def change_equipment_led(_, value):
             nonlocal added_price_equipment, price
-            print("FUnction active", value)
             added_price_equipment = 0
             if value is True:
                 added_price_equipment += 15000
             else:
                 added_price_equipment += -15000
-            print(added_price_equipment)
             price += added_price_equipment
             change_price()
 
@@ -161,15 +155,15 @@ class Manager(ScreenManager):
         checkbox_layout.add_widget(navigation_checkbox)
         checkbox_layout.add_widget(Label(text="Navigation\n"
                                               "+ 20 000 Kč", halign="left", pos_hint={"left": 5}, size_hint_max_x=50,
-                                         size_hint =(None,1)))
+                                         size_hint=(None, 1)))
         checkbox_layout.add_widget(cc_checkbox)
         checkbox_layout.add_widget(Label(text="Cruise Control\n"
                                               "+ 5 000 Kč", halign="left", pos_hint={"left": 5}, size_hint_max_x=50,
-                                         size_hint =(None,1)))
+                                         size_hint=(None, 1)))
         checkbox_layout.add_widget(led_checkbox)
         checkbox_layout.add_widget(Label(text="LED Headlights\n"
                                               "+ 15 000 Kč", halign="left", pos_hint={"left": 5}, size_hint_max_x=50,
-                                         size_hint =(None,1)))
+                                         size_hint=(None, 1)))
 
         equipment_screen_layout.add_widget(checkbox_layout)
         equipment_price_label = Label(halign="right", text=price_text, size_hint=(1, 0.2))
@@ -179,10 +173,33 @@ class Manager(ScreenManager):
         self.add_widget(equipment_screen)
 
         # loan screen
+        def calculate_loan(_, value):
+            value = int(value)
+            nonlocal months
+            months = price / value
+            loan_text.text = "The car will be yours in {} months.".format(months)
+
+        months = 0
         loan_screen = Screen(name="4 - Loan")
+        loan_layout = BoxLayout(spacing=1, orientation="vertical")
+
+        loan_layout.add_widget(Label(valign="top", text="Calculate Loan", bold=True, size_hint=(1, 0.2)))
+        loan_price_label = Label(halign="left", text=price_text, size_hint=(1, 0.5))
+        loan_layout.add_widget(loan_price_label)
+
+        loan_layout.add_widget(Label(text="Enter how much you can pay every month\n"
+                                          "we will calculate how fast* you will be able to pay your car.\n\n"
+                                          " * added interest is not counted ",
+                                     size_hint=(1, 0.6)))
+        maximum_payment = TextInput(text="5000", multiline=False, size_hint=(0.5, 0.3), pos_hint={"center_x": 0.5})
+        loan_layout.add_widget(maximum_payment)
+        maximum_payment.bind(text=calculate_loan)
+        loan_text = Label(text="The car will be yours in {0:.1f} months.".format(months))
+        loan_layout.add_widget(loan_text)
+        loan_layout.add_widget(Label(size_hint=(1, 2)))
+
+        loan_screen.add_widget(loan_layout)
         self.add_widget(loan_screen)
-
-
 
 
 class Nav(GridLayout):
