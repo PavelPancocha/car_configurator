@@ -6,8 +6,8 @@ from kivy.uix.button import Button
 from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.label import Label
 from kivy.uix.image import Image
+from kivy.uix.checkbox import CheckBox
 
-from kivy.cache import Cache
 
 
 class Manager(ScreenManager):
@@ -19,6 +19,14 @@ class Manager(ScreenManager):
         added_price_colour = 0
         added_price_engine = 0
         added_price_equipment = 0
+
+        def change_price():
+            nonlocal price_text
+            price_text = "Selected configuration cost: {} Kč".format(price)
+            colour_price_label.text = price_text
+            engine_price_label.text = price_text
+            equipment_price_label.text = price_text
+
         super(Manager, self).__init__(*args, **kwargs)
         # define screens
         # colour screen
@@ -35,7 +43,6 @@ class Manager(ScreenManager):
         def changecolor(btn):
             new_image_name = str(btn.text)
             new_image_name = new_image_name.split("\n")
-            print(new_image_name)
             image.source = "{}.png".format(new_image_name[0])
             image.reload()
             nonlocal price, added_price_colour
@@ -50,11 +57,7 @@ class Manager(ScreenManager):
             elif btn.text == "Orange\n+13000 Kč":
                 added_price_colour = 13000
             price += added_price_colour
-
-            nonlocal price_text
-            price_text = "Selected configuration cost: {} Kč".format(price)
-            colour_price_label.text = price_text
-            engine_price_label.text = price_text
+            change_price()
 
         switches = GridLayout(cols=4, size_hint=(1, 0.2))
         switches.add_widget(Button(text="Red\nStandard color", halign="center", on_release=changecolor))
@@ -72,7 +75,6 @@ class Manager(ScreenManager):
             price -= added_price_engine
             added_price_engine = 0
             btn_txt = str(btn.text).split("\n")
-            print(btn_txt)
             if btn_txt[0] == "80 kW":
                 added_price_engine = 0
             elif btn_txt[0] == "110 kW":
@@ -82,11 +84,8 @@ class Manager(ScreenManager):
                 else:
                     added_price_engine = 40000
             price += added_price_engine
+            change_price()
 
-            nonlocal price_text
-            price_text = "Selected configuration cost: {} Kč".format(price)
-            colour_price_label.text = price_text
-            engine_price_label.text = price_text
 
         engine_screen = Screen(name="2 - Engine")
         engine_layout = BoxLayout(spacing=1, orientation="vertical")
@@ -113,7 +112,70 @@ class Manager(ScreenManager):
         self.add_widget(engine_screen)
 
         # equipment screen
+        def change_equipment_navigation(_,value):
+            nonlocal added_price_equipment, price
+            print("FUnction active", value)
+            added_price_equipment = 0
+            if value is True:
+                added_price_equipment += 20000
+            else:
+                added_price_equipment += -20000
+            print(added_price_equipment)
+            price += added_price_equipment
+            change_price()
+
+        def change_equipment_cc(_,value):
+            nonlocal added_price_equipment, price
+            print("FUnction active", value)
+            added_price_equipment = 0
+            if value is True:
+                added_price_equipment += 5000
+            else:
+                added_price_equipment += -5000
+            print(added_price_equipment)
+            price += added_price_equipment
+            change_price()
+
+        def change_equipment_led(_,value):
+            nonlocal added_price_equipment, price
+            print("FUnction active", value)
+            added_price_equipment = 0
+            if value is True:
+                added_price_equipment += 15000
+            else:
+                added_price_equipment += -15000
+            print(added_price_equipment)
+            price += added_price_equipment
+            change_price()
+
         equipment_screen = Screen(name="3 - Equipment")
+        equipment_screen_layout = BoxLayout(spacing=1, orientation="vertical")
+        equipment_screen_layout.add_widget(Label(valign="top", text="Choose Equipment", bold=True, size_hint=(1, 0.2)))
+        checkbox_layout = GridLayout(cols=2, rows=3)
+        navigation_checkbox = CheckBox(size_hint=(1, 1), size_hint_max_x=40)
+        navigation_checkbox.bind(active=change_equipment_navigation)
+        cc_checkbox = CheckBox(size_hint=(1, 1), size_hint_max_x=40)
+        cc_checkbox.bind(active=change_equipment_cc)
+        led_checkbox = CheckBox(size_hint=(1, 1), size_hint_max_x=40)
+        led_checkbox.bind(active=change_equipment_led)
+        checkbox_layout.add_widget(navigation_checkbox)
+        checkbox_layout.add_widget(Label(text="Navigation\n"
+                                              "+ 20 000 Kč", halign="left", pos_hint={"left": 5}, size_hint_max_x=50,
+                                         size_hint =(None,1)))
+        checkbox_layout.add_widget(cc_checkbox)
+        checkbox_layout.add_widget(Label(text="Cruise Control\n"
+                                              "+ 5 000 Kč", halign="left", pos_hint={"left": 5}, size_hint_max_x=50,
+                                         size_hint =(None,1)))
+        checkbox_layout.add_widget(led_checkbox)
+        checkbox_layout.add_widget(Label(text="LED Headlights\n"
+                                              "+ 15 000 Kč", halign="left", pos_hint={"left": 5}, size_hint_max_x=50,
+                                         size_hint =(None,1)))
+
+        equipment_screen_layout.add_widget(checkbox_layout)
+        equipment_price_label = Label(halign="right", text=price_text, size_hint=(1, 0.2))
+        equipment_screen_layout.add_widget(equipment_price_label)
+        equipment_screen.add_widget(equipment_screen_layout)
+
         self.add_widget(equipment_screen)
 
         # loan screen
