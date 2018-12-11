@@ -28,14 +28,15 @@ class Manager(ScreenManager):
         car_image_layout = GridLayout(cols = 1, rows = 1)
         car_image_layout.add_widget(image)
         colour_layout.add_widget(car_image_layout)
-        def changeimage(self):
-            image.source = "green.png"
+
+        def changecolor(btn):
+            image.source = "{}.png".format(btn.text)
             image.reload()
-        switches = GridLayout(cols=4, size_hint=(1,0.2))
-        switches.add_widget(Button(text="Red", on_release=changeimage))
-        switches.add_widget(Button(text="Green"))
-        switches.add_widget(Button(text="Blue"))
-        switches.add_widget(Button(text="White"))
+        switches = GridLayout(cols=4, size_hint=(1, 0.2))
+        switches.add_widget(Button(text="Red", on_release=changecolor))
+        switches.add_widget(Button(text="Blue", on_release=changecolor))
+        switches.add_widget(Button(text="Silver", on_release=changecolor))
+        switches.add_widget(Button(text="Orange", on_release=changecolor))
 
         colour_layout.add_widget(switches)
         colour_screen.add_widget(colour_layout)
