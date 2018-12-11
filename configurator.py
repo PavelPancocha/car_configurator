@@ -18,13 +18,16 @@ class Manager(ScreenManager):
 
     def __init__(self, *args, **kwargs):
         image = Image(source="red.png", allow_stretch=True)
+        price = 350000
         super(Manager, self).__init__(*args, **kwargs)
         # define screens
         # colour screen
 
         colour_screen = Screen(name = "1 - Colour")
         colour_layout = BoxLayout(spacing = 1, orientation="vertical")
-        colour_layout.add_widget(Label(valign="top", text="Choose Colour", size_hint=(1,0.5)))
+        colour_layout.add_widget(Label(valign="top", text="Choose Colour", bold=True, size_hint=(1,0.2)))
+        price_label = Label(halign="right", text="Selected configuration cost: {} Kč".format(price), size_hint=(1,0.2))
+        colour_layout.add_widget(price_label)
         car_image_layout = GridLayout(cols = 1, rows = 1)
         car_image_layout.add_widget(image)
         colour_layout.add_widget(car_image_layout)
@@ -32,6 +35,12 @@ class Manager(ScreenManager):
         def changecolor(btn):
             image.source = "{}.png".format(btn.text)
             image.reload()
+
+            nonlocal price
+            price += 1000
+            print(price)
+            price_label.text = "Selected configuration cost: {} Kč".format(price)
+
         switches = GridLayout(cols=4, size_hint=(1, 0.2))
         switches.add_widget(Button(text="Red", on_release=changecolor))
         switches.add_widget(Button(text="Blue", on_release=changecolor))
